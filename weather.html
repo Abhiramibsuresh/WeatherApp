@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,10 +68,7 @@
     </div>
 
     <script>
-        // STEP 1: Add your OpenWeather API key here
         const API_KEY = window.WEATHER_API_KEY;
-
-        // STEP 2: Get HTML elements using their IDs
         const weatherForm = document.getElementById("weatherForm");
         const cityInput = document.getElementById("cityInput");
         const searchBtn = document.getElementById("searchBtn");
@@ -88,19 +84,15 @@
         const windSpeed = document.getElementById("windSpeed");
         const pressure = document.getElementById("pressure");
 
-        // STEP 3: Listen for form submission
         weatherForm.addEventListener("submit", function (event) {
             event.preventDefault();
             getWeather();
         });
 
-        // STEP 4: Create an async function
         async function getWeather() {
 
-            // Read the city entered by the user
             const city = cityInput.value.trim();
 
-            // Check whether the city input is empty
             if (city === "") {
                 message.textContent = "Please enter a city name.";
                 message.className = "error";
@@ -108,7 +100,6 @@
                 return;
             }
 
-            // Check whether the API key has been replaced
             if (API_KEY === "YOUR_API_KEY" || API_KEY.trim() === "") {
                 message.textContent =
                     "Please add your OpenWeather API key in the code.";
@@ -123,7 +114,6 @@
             weatherResult.classList.add("hidden");
             searchBtn.disabled = true;
 
-            // Build the API URL
             const url =
                 "https://api.openweathermap.org/data/2.5/weather?q="
                 + encodeURIComponent(city)
@@ -131,10 +121,8 @@
                 + "&units=metric";
 
             try {
-                // Send a request and wait for the response
                 const response = await fetch(url);
 
-                // Check whether the HTTP request was successful
                 if (!response.ok) {
                     if (response.status === 404) {
                         throw new Error(
@@ -159,10 +147,8 @@
                     );
                 }
 
-                // Convert the response body into a JavaScript object
                 const data = await response.json();
 
-                // Display the data returned by the API
                 cityName.textContent = data.name + ", " + data.sys.country;
 
                 temperature.textContent =
@@ -183,30 +169,25 @@
                 pressure.textContent =
                     data.main.pressure + " hPa";
 
-                // Display the matching weather icon
                 weatherIcon.src =
                     "https://openweathermap.org/img/wn/"
                     + data.weather[0].icon + "@2x.png";
 
                 weatherIcon.alt = data.weather[0].description;
 
-                // Show the weather result section
                 weatherResult.classList.remove("hidden");
 
-                // Display a success message
                 message.textContent = "Weather information loaded successfully.";
                 message.className = "";
 
             } catch (error) {
 
-                // Display a useful error message
                 message.textContent = error.message;
                 message.className = "error";
                 weatherResult.classList.add("hidden");
 
             } finally {
-
-                // Re-enable the button whether the request succeeds or fails
+                
                 searchBtn.disabled = false;
             }
         }
